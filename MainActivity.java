@@ -9,6 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,8 +43,25 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("BHAV", response.body().toString());
 
+                TestModel res = response.body();
+
+                List<TestModel.Data> Datalist = res.data;
+
+                String catid, catname, icon;
+                for (int i=0;i<Datalist.size();i++)
+                {
+                    catid = Datalist.get(i).Category.get(i);
+                }
 
 
+//                String catid = response.body().data.get(0).Category.get(0).CatId;
+//                String catname = response.body().data.get(0).Category.get(0).CategoryName;
+//                String icon = response.body().data.get(0).Category.get(0).Icon;
+//
+//                tvCatId.setText(catid);
+//                tvCatName.setText(catname);
+//
+//                Glide.with(ctx).load(icon).into(ivCategory);
             }
 
             @Override
