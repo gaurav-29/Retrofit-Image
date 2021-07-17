@@ -1,18 +1,16 @@
 package com.example.retrofitimage;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,10 +18,12 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView ivCategory;
-    TextView tvCatId, tvCatName, tvIcon, tvError;
+    RecyclerView recCategory;
     APIInterface apiInterface;
     Context ctx = this;
+    ArrayList<TestModel.Category> CategoryList = new ArrayList<>();
+    CategoryAdapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,29 +45,21 @@ public class MainActivity extends AppCompatActivity {
 
                 TestModel res = response.body();
 
-                List<TestModel.Data> Datalist = res.data;
+                ArrayList<TestModel.Category> CategoryList = res.data.get(0).Category;
 
-                String catid, catname, icon;
-                for (int i=0;i<Datalist.size();i++)
-                {
-                    catid = Datalist.get(i).Category.get(i);
-                }
+//                for(int i=0; i<CategoryList.size();i++)
+//                    tvCatId.append(" Id:"+CategoryList.get(i).CatId+ "\n Name :"+CategoryList.get(i).CategoryName+
+//                            "\n Icon :"+CategoryList.get(i).Icon + "\n\n\n");
 
-
-//                String catid = response.body().data.get(0).Category.get(0).CatId;
-//                String catname = response.body().data.get(0).Category.get(0).CategoryName;
-//                String icon = response.body().data.get(0).Category.get(0).Icon;
-//
-//                tvCatId.setText(catid);
-//                tvCatName.setText(catname);
-//
-//                Glide.with(ctx).load(icon).into(ivCategory);
+                mAdapter = new CategoryAdapter(CategoryList, ctx);
+                recCategory.setLayoutManager(new GridLayoutManager(ctx,1));
+                recCategory.setItemAnimator(new DefaultItemAnimator());
+                recCategory.setAdapter(mAdapter);
             }
 
             @Override
             public void onFailure(Call<TestModel> call, Throwable t) {
 
-                tvError.setText(t.getMessage());
                 Toast.makeText(ctx, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
@@ -76,10 +68,6 @@ public class MainActivity extends AppCompatActivity {
     }
     public void init()
     {
-        ivCategory = findViewById(R.id.ivCategory);
-        tvCatId = findViewById(R.id.tvCatId);
-        tvCatName = findViewById(R.id.tvCatName);
-        tvIcon = findViewById(R.id.tvIcon);
-        tvError = findViewById(R.id.tvError);
+        recCategory = findViewById(R.id.recCategory);
     }
 }
